@@ -7,6 +7,7 @@
 #include <map>
 #include <stdexcept>
 #include <charconv>
+#include <regex>
 #include <boost/range.hpp>
 #include <boost/regex.hpp>
 #include <boost/algorithm/string.hpp>
