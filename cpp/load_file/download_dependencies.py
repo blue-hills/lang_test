@@ -19,7 +19,8 @@ def extract_directory_from_zip_url(url,directory, dest_dir='.'):
 def get_third_party_src(third_party_zip_url,folder_to_copy,dest_folder,folder_to_remove):
     extract_directory_from_zip_url(third_party_zip_url,folder_to_copy)
     os.makedirs(dest_folder,exist_ok=True)
-    shutil.copytree(f'./{folder_to_copy}',dest_folder,dirs_exist_ok=True)
+    shutil.rmtree(dest_folder)
+    shutil.copytree(f'./{folder_to_copy}',dest_folder)
     shutil.rmtree(folder_to_remove,ignore_errors=True)    
     
 def main():
