@@ -23,13 +23,17 @@ def generate_phone_numbers(quantity):
     return requests.get(url,headers=get_request_headers(),params=params).json()
 
 
-def generate_data(start_id,nitems,f):
+def generate_data(start_id,nitems,quote,f):
     names = generate_names(nitems)
     p_numbers = generate_phone_numbers(nitems)
     for i,item in enumerate(zip(names,p_numbers),start=start_id):
         age = random.randint(20,101)
         salary = random.randint(50,400)*1000
-        print(f'{i} {item[0]} {item[1][3:]} {age} {salary}',file=f)       
+        if quote:
+            name = item[0].split()
+            print(f'{i} "{name[0]}" "{name[1]}" "{item[1][3:]}" {age} {salary}',file=f)       
+        else:
+            print(f'{i} {item[0]} {item[1][3:]} {age} {salary}',file=f)       
 
 def get_args():
     argparser = argparse.ArgumentParser("DataGenerator",
@@ -37,6 +41,7 @@ def get_args():
     argparser.add_argument('-r','--records',type=int,default = 1000,help='Number of Records to be generated')
     argparser.add_argument('-o','--out',type=str,default='./out',help='Output File Path')
     argparser.add_argument('-k','--key',type=str,required=True,help='API Key to https://randommer.io/ ')
+    argparser.add_argument('-q','--quote',type=bool,help='Write Quoted Strings',default=False)
     args = argparser.parse_args()
     return args
 
@@ -49,11 +54,11 @@ def main():
     # fetch records in batches as number of records per call cannot exceed MAX_FETCH_LIMIT
         loopcount = args.records//MAX_FETCH_LIMIT
         for batch in range(loopcount):
-            generate_data(batch*MAX_FETCH_LIMIT+1,MAX_FETCH_LIMIT,f)
+            generate_data(batch*MAX_FETCH_LIMIT+1,MAX_FETCH_LIMIT,args.quote,f)
             print(f'generated {(batch+1)*MAX_FETCH_LIMIT} ')
         remaining_rec = args.records %MAX_FETCH_LIMIT
         if remaining_rec != 0:
-            generate_data(loopcount*MAX_FETCH_LIMIT+1,remaining_rec,f)
+            generate_data(loopcount*MAX_FETCH_LIMIT+1,remaining_rec,args.quote,ef)
             print(f'generated {remaining_rec} ')
 
 
